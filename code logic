@@ -1,0 +1,57 @@
+export class ChatService {
+  private messages: Message[] = [];
+
+  /**
+   * Initial message creation - Status: SENT
+   */
+  public sendMessage(senderId: string, recipientId: string, content: string): Message {
+    const newMessage: Message = {
+      id: crypto.randomUUID(),
+      senderId,
+      recipientId,
+      content,
+      timestamp: Date.now(),
+      status: MessageStatus.SENT, // "Sent flag"
+    };
+
+    this.messages.push(newMessage);
+    return newMessage;
+  }
+
+  /**
+   * Updates status to DELIVERED when recipient receives it
+   */
+  public markAsDelivered(messageId: string): void {
+    this.updateStatus(messageId, MessageStatus.DELIVERED);
+  }
+
+  /**
+   * Updates status to READ when recipient opens the chat
+   */
+  public markAsRead(messageId: string): void {
+    this.updateStatus(messageId, MessageStatus.READ);
+  }
+
+  /**
+   * Helper to ensure valid state transitions (e.g., can't go from READ back to SENT)
+   */
+  private updateStatus(id: string, newStatus: MessageStatus): void {
+    const message = this.messages.find((m) => m.id === id);
+    if (!message) return;
+
+    const statusWeight = {
+      [MessageStatus.SENDING]: 0,
+      [MessageStatus.SENT]: 1,
+      [MessageStatus.DELIVERED]: 2,
+      [MessageStatus.READ]: 3,
+    };
+
+    if (statusWeight[newStatus] > statusWeight[message.status]) {
+      message.status = newStatus;
+    }
+  }
+
+  public getMessages(): Message[] {
+    return [...this.messages];
+  }
+}
