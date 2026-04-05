@@ -1,2 +1,22 @@
 # ChatApp
 A peer to peer application 
+export enum MessageStatus {
+  SENDING = 'SENDING',
+  SENT = 'SENT',
+  DELIVERED = 'DELIVERED',
+  READ = 'READ',
+}
+
+export interface Message {
+  id: string;
+  senderId: string;
+  recipientId: string;
+  content: string;
+  timestamp: number;
+  status: MessageStatus;
+}
+
+export interface ChatState {
+  messages: Message[];
+  activeConversationId: string | null;
+}
