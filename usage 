@@ -1,0 +1,16 @@
+const chatApp = new ChatService();
+
+// 1. User A sends a message
+const msg = chatApp.sendMessage("user_1", "user_2", "Hello! Check out this clean code.");
+console.log(`Message Created: [${msg.status}]`); 
+// Output: [SENT]
+
+// 2. Simulate Network Callback (Recipient's device acknowledges receipt)
+chatApp.markAsDelivered(msg.id);
+console.log(`Message Received: [${chatApp.getMessages()[0].status}]`); 
+// Output: [DELIVERED]
+
+// 3. Simulate User Action (Recipient opens the conversation)
+chatApp.markAsRead(msg.id);
+console.log(`Message Opened: [${chatApp.getMessages()[0].status}]`); 
+// Output: [READ]
